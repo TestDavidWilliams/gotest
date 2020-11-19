@@ -1,20 +1,25 @@
 package main
 
 import (
-	"github.com/softlayer/softlayer-go/services"
-	"github.com/softlayer/softlayer-go/session"
+"fmt"
+"github.com/PagerDuty/go-pagerduty"
 )
 
-func main() {
-	username := ""
-	apikey := ""
-	// 1. Create a session
-	sess := session.New(username, apikey)
-	// 2. Get a service
-	accountService := services.GetAccountService(sess)
-	services
-	// 3. Invoke a method:
-	account, err := accountService.GetObject()
+var	authtoken = "y_NbAkKc66ryYTWUXYEu" // Set your auth token here
 
+func main() {
+	var opts pagerduty.ListEscalationPoliciesOptions
+	client := pagerduty.NewClient(authtoken)
+	eps, err := client.ListEscalationPolicies(opts)
+	if err != nil {
+		panic(err)
+	}
+	for _, p := range eps.EscalationPolicies {
+		fmt.Println(p.Name)
+		fmt.Println(p.ID)
+		names := p.EscalationRules[0].Targets[0].Summary
+		fmt.Println(names)
+		break
+	}
 
 }
